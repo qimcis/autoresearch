@@ -1,0 +1,54 @@
+  ┊ 📚 skill     marconi-autoresearch-workspace  0.0s
+  ┊ 📋 plan      5 task(s)  0.0s
+  ┊ 📖 read      /workspace/autoresearch/README.md  2.5s
+  ┊ 📖 read      /workspace/autoresearch/program.md  2.5s
+  ┊ 📖 read      /workspace/autoresearch/context.md  2.5s
+  ┊ 📖 read      /workspace/autoresearch/AGENTS.md  2.5s
+  ┊ 🔎 find      context.txt  3.1s
+  ┊ 🔎 find      marconi.txt  1.8s
+  ┊ 📖 read      /workspace/autoresearch/results.tsv  2.4s
+  ┊ 💻 $         export SGLANG_REPO=/workspace/sglang MA...  0.6s
+  ┊ 💻 $         printf 'branch='; git branch --show-cur...  0.6s
+  ┊ 🔍 recall    "marconi OR autotune OR autoresea..."  19.6s
+  ┊ 📖 read      /workspace/autoresearch/context.md  2.5s
+  ┊ 💻 $         printf 'branch='; git branch --show-cur...  0.6s
+  ┊ 🔎 find      marconi_(tuner|replay_core|cost_...  1.8s
+  ┊ 🔎 find      *marconi*.py  1.2s
+  ┊ 🔎 find      scheduler.py  1.2s
+  ┊ 🔎 find      mamba_radix_cache.py  1.2s
+  ┊ 💻 $         git branch --list && echo '---' && git ...  0.6s
+  ┊ 💻 $         git rev-parse --short marconi-eviction ...  0.6s
+  ┊ 🔎 grep      eff_weight|flat|tie|window|press...  1.8s
+  ┊ 📖 read      ...g/srt/mem_cache/marconi_tuner.py  2.5s
+  ┊ 📖 read      ...mem_cache/marconi_replay_core.py  2.5s
+  ┊ 📖 read      .../mem_cache/marconi_cost_model.py  2.5s
+  ┊ 🔎 grep      def tune|weight_scores|last_tune...  1.2s
+  ┊ 🔎 grep      select_marconi_candidate_index|n...  1.2s
+  ┊ 🔎 grep      weight_scores  1.2s
+  ┊ 🔎 grep      eff_weight  1.2s
+  ┊ 🔎 grep      candidate  1.2s
+  ┊ 📖 read      ...g/srt/mem_cache/marconi_tuner.py  2.5s
+  ┊ 📖 read      ...g/srt/mem_cache/marconi_utils.py  2.5s
+  ┊ 💻 $         git status --short --untracked-files=no...  0.6s
+  ┊ 🔎 grep      tune_marconi_eff_weight  1.2s
+  ┊ 🔎 grep      last_tuned_eff_weight|autotune|w...  1.2s
+  ┊ 📖 read      ...t/mem_cache/mamba_radix_cache.py  2.5s
+  ┊ 🔎 grep      poll_tuning_future  1.2s
+  ┊ 🔎 grep      weight_scores  1.2s
+  ┊ 🔎 grep      best_weight  1.2s
+  ┊ 📖 read      ...t/mem_cache/mamba_radix_cache.py  2.5s
+  ┊ 🔎 grep      _marconi_get_tuning_weight_grid|...  1.2s
+  ┊ 🔎 grep      class MarconiTuningConfig|tuning...  1.2s
+  ┊ 📖 read      .../srt/mem_cache/marconi_config.py  2.5s
+  ┊ 🔎 grep      MarconiTuningConfig  1.2s
+  ┊ 🔎 grep      _marconi_get_tuning_weight_grid  1.2s
+  ┊ 📖 read      ...t/mem_cache/mamba_radix_cache.py  2.5s
+  ┊ 🔎 find      *  1.2s
+  ┊ 📖 read      /workspace/autoresearch/run.log  2.5s
+  ┊ 🔎 grep      request_throughput|mean_ttft_ms|...  1.2s
+  ┊ 🔎 find      *server.log  1.2s
+  ┊ 🔎 grep      Marconi autotune finished  1.2s
+  ┊ 🔎 grep      Marconi autotune applied  1.3s
+  ┊ 🔎 grep      current_regret  1.2s
+  ┊ 🐍 exec      from hermes_tools import search_...  2.6s
+  ┊ 🐍 exec      import os, re  3.2s

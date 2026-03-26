@@ -1,0 +1,5 @@
+[2026-03-26T17:19:12Z] supervisor started
+[2026-03-26T17:19:12Z] launching batch
+[2026-03-26T17:19:12Z] starting bounded Marconi batch
+workspace=/workspace/autoresearch
+target_repo=/workspace/sglang

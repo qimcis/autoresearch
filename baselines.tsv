@@ -1,0 +1,2 @@
+branch	mode	throughput	mean_ttft_ms	description
+main	fast	3.0469139262956166	261441.45065923175	main branch hybrid-model reference on nvidia/NVIDIA-Nemotron-Nano-9B-v2 with radix eviction policy lru and no Marconi

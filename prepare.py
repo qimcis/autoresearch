@@ -102,6 +102,10 @@ def extra_server_args() -> list[str]:
     return shlex.split(value)
 
 
+def radix_eviction_policy() -> str:
+    return os.environ.get("MARCONI_RADIX_EVICTION_POLICY", "marconi").strip()
+
+
 def eval_mode() -> str:
     return os.environ.get("MARCONI_EVAL_MODE", "fast").strip().lower()
 
@@ -224,7 +228,7 @@ def launch_server(repo: Path, run_dir: Path) -> tuple[subprocess.Popen[str], Pat
         str(page_size()),
         "--enable-metrics",
         "--radix-eviction-policy",
-        "marconi",
+        radix_eviction_policy(),
         *extra_server_args(),
     ]
     with server_log.open("w", encoding="utf-8") as fout:

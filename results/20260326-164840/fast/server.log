@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "/.uv/python_install/cpython-3.10.20-linux-x86_64-gnu/lib/python3.10/runpy.py", line 187, in _run_module_as_main
+    mod_name, mod_spec, code = _get_module_details(mod_name, _Error)
+  File "/.uv/python_install/cpython-3.10.20-linux-x86_64-gnu/lib/python3.10/runpy.py", line 110, in _get_module_details
+    __import__(pkg_name)
+  File "/workspace/sglang/python/sglang/__init__.py", line 29, in <module>
+    from sglang.lang.api import (
+  File "/workspace/sglang/python/sglang/lang/api.py", line 7, in <module>
+    from sglang.lang.backend.base_backend import BaseBackend
+  File "/workspace/sglang/python/sglang/lang/backend/base_backend.py", line 5, in <module>
+    from sglang.lang.interpreter import StreamExecutor
+  File "/workspace/sglang/python/sglang/lang/interpreter.py", line 35, in <module>
+    from sglang.utils import (
+  File "/workspace/sglang/python/sglang/utils.py", line 27, in <module>
+    from pydantic import BaseModel
+ModuleNotFoundError: No module named 'pydantic'

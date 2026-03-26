@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "/.uv/python_install/cpython-3.10.20-linux-x86_64-gnu/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/.uv/python_install/cpython-3.10.20-linux-x86_64-gnu/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/workspace/sglang/python/sglang/launch_server.py", line 8, in <module>
+    from sglang.srt.server_args import prepare_server_args
+  File "/workspace/sglang/python/sglang/srt/server_args.py", line 29, in <module>
+    from sglang.srt.connector import ConnectorType
+  File "/workspace/sglang/python/sglang/srt/connector/__init__.py", line 11, in <module>
+    from sglang.srt.connector.redis import RedisConnector
+  File "/workspace/sglang/python/sglang/srt/connector/redis.py", line 10, in <module>
+    from sglang.srt.connector.serde import create_serde
+  File "/workspace/sglang/python/sglang/srt/connector/serde/__init__.py", line 8, in <module>
+    from sglang.srt.connector.serde.safe_serde import SafeDeserializer, SafeSerializer
+  File "/workspace/sglang/python/sglang/srt/connector/serde/safe_serde.py", line 6, in <module>
+    from safetensors.torch import load, save
+ModuleNotFoundError: No module named 'safetensors'

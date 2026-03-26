@@ -1,0 +1,7 @@
+target_commit	mode	throughput	mean_ttft_ms	autotune_applied	last_tuned_eff_weight	status	description
+2ab3ce201	fast	5.250965794498335	184439.6969225568	1	0.5	discard	regret-based near-tie stabilization in autotune apply path; completed proxy run but no baseline win established
+2ab3ce201	fast	5.412126550297808	178385.7908912387	2	0.1	keep	later autotune rounds use a centered 9-point local refinement grid so round 2 finishes and applies in fast proxy runs
+2ab3ce201	fast	5.14118814589566	187786.7047625071	2	0.5	discard	later-round 1% switch threshold to freeze tiny local-refinement gains; worse throughput and TTFT than the centered-grid baseline
+2ab3ce201	fast	5.384722405586871	179291.69253381738	2	0.2	discard	narrow the later-round refinement grid to 7 points around the active weight; slightly worse than the centered 9-point refinement grid
+2ab3ce201	fast	5.1472365109284075	187836.20855777359	2	0.4	discard	shorten later-round autotune target by 100 requests so the local refinement applies earlier; worse throughput and TTFT than current best local state
+2ab3ce201	fast	5.126806781711277	188356.16038440942	2	0.1	discard	bias later-round 9-point local refinement one extra step toward lower weights; reaches 0.1 but degrades throughput and TTFT

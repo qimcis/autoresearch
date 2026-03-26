@@ -1,0 +1,32 @@
+/workspace/sglang/python/sglang/launch_server.py:51: UserWarning: 'python -m sglang.launch_server' is still supported, but 'sglang serve' is the recommended entrypoint.
+  Example: sglang serve --model-path <model> [options]
+  warnings.warn(
+Traceback (most recent call last):
+  File "/.uv/python_install/cpython-3.10.20-linux-x86_64-gnu/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/.uv/python_install/cpython-3.10.20-linux-x86_64-gnu/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/workspace/sglang/python/sglang/launch_server.py", line 59, in <module>
+    server_args = prepare_server_args(sys.argv[1:])
+  File "/workspace/sglang/python/sglang/srt/server_args.py", line 6253, in prepare_server_args
+    return ServerArgs.from_cli_args(raw_args)
+  File "/workspace/sglang/python/sglang/srt/server_args.py", line 5676, in from_cli_args
+    return cls(**kwargs)
+  File "<string>", line 359, in __init__
+  File "/workspace/sglang/python/sglang/srt/server_args.py", line 774, in __post_init__
+    self._handle_piecewise_cuda_graph()
+  File "/workspace/sglang/python/sglang/srt/server_args.py", line 1059, in _handle_piecewise_cuda_graph
+    if self.get_model_config().is_piecewise_cuda_graph_disabled_model:
+  File "/workspace/sglang/python/sglang/srt/server_args.py", line 5716, in get_model_config
+    from sglang.srt.configs.model_config import ModelConfig
+  File "/workspace/sglang/python/sglang/srt/configs/model_config.py", line 27, in <module>
+    from sglang.srt.layers.quantization import QUANTIZATION_METHODS
+  File "/workspace/sglang/python/sglang/srt/layers/quantization/__init__.py", line 19, in <module>
+    from sglang.srt.layers.quantization.auto_round import AutoRoundConfig
+  File "/workspace/sglang/python/sglang/srt/layers/quantization/auto_round.py", line 12, in <module>
+    from sglang.srt.layers.quantization.utils import get_scalar_types
+  File "/workspace/sglang/python/sglang/srt/layers/quantization/utils.py", line 13, in <module>
+    from sglang.srt.layers.quantization.fp8_kernel import scaled_fp8_quant
+  File "/workspace/sglang/python/sglang/srt/layers/quantization/fp8_kernel.py", line 53, in <module>
+    from sgl_kernel import sgl_per_token_quant_fp8
+ModuleNotFoundError: No module named 'sgl_kernel'

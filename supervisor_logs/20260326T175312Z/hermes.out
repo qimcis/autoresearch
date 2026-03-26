@@ -1,0 +1,142 @@
+
+██╗  ██╗███████╗██████╗ ███╗   ███╗███████╗███████╗       █████╗  ██████╗ ███████╗███╗   ██╗████████╗
+██║  ██║██╔════╝██╔══██╗████╗ ████║██╔════╝██╔════╝      ██╔══██╗██╔════╝ ██╔════╝████╗  ██║╚══██╔══╝
+███████║█████╗  ██████╔╝██╔████╔██║█████╗  ███████╗█████╗███████║██║  ███╗█████╗  ██╔██╗ ██║   ██║
+██╔══██║██╔══╝  ██╔══██╗██║╚██╔╝██║██╔══╝  ╚════██║╚════╝██╔══██║██║   ██║██╔══╝  ██║╚██╗██║   ██║
+██║  ██║███████╗██║  ██║██║ ╚═╝ ██║███████╗███████║      ██║  ██║╚██████╔╝███████╗██║ ╚████║   ██║
+╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝╚══════╝      ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝
+
+╭────────────────────────────────────────────────────────────────── Hermes Agent v0.4.0 (2026.3.23) ──────────────────────────────────────────────────────────────────╮
+│                                   Available Tools                                                                                                                   │
+│  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⡀⠀⣀⣀⠀⢀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   browser: browser_back, browser_click, ...                                                                                         │
+│  ⠀⠀⠀⠀⠀⠀⢀⣠⣴⣾⣿⣿⣇⠸⣿⣿⠇⣸⣿⣿⣷⣦⣄⡀⠀⠀⠀⠀⠀⠀   clarify: clarify                                                                                                                  │
+│  ⠀⢀⣠⣴⣶⠿⠋⣩⡿⣿⡿⠻⣿⡇⢠⡄⢸⣿⠟⢿⣿⢿⣍⠙⠿⣶⣦⣄⡀⠀   code_execution: execute_code                                                                                                      │
+│  ⠀⠀⠉⠉⠁⠶⠟⠋⠀⠉⠀⢀⣈⣁⡈⢁⣈⣁⡀⠀⠉⠀⠙⠻⠶⠈⠉⠉⠀⠀   cronjob: cronjob                                                                                                                  │
+│  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣴⣿⡿⠛⢁⡈⠛⢿⣿⣦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   delegation: delegate_task                                                                                                         │
+│  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠿⣿⣦⣤⣈⠁⢠⣴⣿⠿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   file: patch, read_file, search_files, write_file                                                                                  │
+│  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠻⢿⣿⣦⡉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   homeassistant: ha_call_service, ha_get_state, ...                                                                                 │
+│  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢷⣦⣈⠛⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   honcho: honcho_conclude, honcho_context, ...                                                                                      │
+│  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣴⠦⠈⠙⠿⣦⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   (and 11 more toolsets...)                                                                                                         │
+│  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣿⣤⡈⠁⢤⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀                                                                                                                                     │
+│  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠷⠄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   Available Skills                                                                                                                  │
+│  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⠑⢶⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   autonomous-ai-agents: claude-code, codex, hermes-agent-spawning, open...                                                          │
+│  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⠁⢰⡆⠈⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   creative: ascii-art, ascii-video, excalidraw                                                                                      │
+│  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠳⠈⣡⠞⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   data-science: jupyter-live-kernel                                                                                                 │
+│  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   dogfood: hermes-agent-setup, hermes-batch-supervisor                                                                              │
+│                                   email: himalaya                                                                                                                   │
+│      gpt-5.4 · Nous Research      gaming: minecraft-modpack-server, pokemon-player                                                                                  │
+│      /workspace/autoresearch      general: dogfood                                                                                                                  │
+│  Session: 20260326_175313_6fc443  github: codebase-inspection, github-auth, github-code-r...                                                                        │
+│                                   inference-sh: inference-sh-cli                                                                                                    │
+│                                   leisure: find-nearby                                                                                                              │
+│                                   mcp: mcporter, native-mcp                                                                                                         │
+│                                   media: gif-search, heartmula, songsee, youtube-content                                                                            │
+│                                   mlops: audiocraft-audio-generation, axolotl, chroma, c...                                                                         │
+│                                   note-taking: obsidian                                                                                                             │
+│                                   productivity: google-workspace, linear, nano-pdf, notion, ocr...                                                                  │
+│                                   red-teaming: godmode                                                                                                              │
+│                                   research: arxiv, blogwatcher, domain-intel, duckduckgo-se...                                                                      │
+│                                   smart-home: openhue                                                                                                               │
+│                                   social-media: xitter                                                                                                              │
+│                                   software-development: code-review, plan, requesting-code-review, suba...                                                          │
+│                                                                                                                                                                     │
+│                                   29 tools · 93 skills · /help for commands                                                                                         │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+Query: Read /workspace/autoresearch/README.md, /workspace/autoresearch/program.md, /workspace/autoresearch/context.md, and /workspace/autoresearch/AGENTS.md first. 
+Then read ${SGLANG_REPO}/context.txt and ${SGLANG_REPO}/marconi.txt if they exist.
+
+You are using /workspace/autoresearch only as the evaluation harness and experiment log. The code to improve is in /workspace/sglang on branch marconi-eviction or its 
+current clean worktree equivalent. Do not commit.
+
+Environment and operating assumptions for this cron run:
+- workspace: /workspace/autoresearch
+- target repo: /workspace/sglang
+- target branch: marconi-eviction
+- hardware proxy: 1xH100
+- model: nvidia/NVIDIA-Nemotron-Nano-9B-v2
+- tensor parallel size: 1
+- eval mode: fast
+- context length: 32768
+- public API must stay aligned with --radix-eviction-policy marconi
+- for this Nemotron setup, use MARCONI_EXTRA_SERVER_ARGS='--mamba-scheduler-strategy no_buffer' when running train.py
+
+At the very start of the cron execution, explicitly rebuild continuity before changing anything:
+1. cd /workspace/autoresearch
+2. ensure these env vars are set for this run:
+   - SGLANG_REPO=/workspace/sglang
+   - MARCONI_MODEL_PATH=nvidia/NVIDIA-Nemotron-Nano-9B-v2
+   - MARCONI_TP_SIZE=1
+   - MARCONI_MIN_GPUS=1
+   - MARCONI_EVAL_MODE=fast
+   - MARCONI_CONTEXT_LENGTH=32768
+   - MARCONI_RESULTS_DIR=/workspace/autoresearch/results
+   - MARCONI_EXTRA_SERVER_ARGS=--mamba-scheduler-strategy no_buffer
+3. read /workspace/autoresearch/results.tsv
+4. inspect git branch, commit, and diff state in /workspace/sglang
+5. read /workspace/autoresearch/context.md again
+6. continue from the best current local repo state you find rather than starting from scratch
+
+This cron execution is bounded. Do exactly 3 research iterations, no more and no less.
+
+For each of the 3 iterations:
+1. inspect current target repo branch/commit/dirty state
+2. form one narrow Marconi autotune policy-quality hypothesis
+3. make one small code-level change in /workspace/sglang only
+4. run exactly one experiment from /workspace/autoresearch with:
+   uv run --no-sync train.py > run.log 2>&1
+5. read the summary from /workspace/autoresearch/run.log
+6. append a row to /workspace/autoresearch/results.tsv
+7. keep the local target-repo change only if it improves autotune-enabled throughput for this proxy setup; otherwise revert just your last change
+8. do not commit
+
+Constraints:
+- do not mainly edit the harness unless it is clearly broken
+- do not broaden into unrelated Marconi work
+- do not change benchmark methodology in a way that breaks comparability
+- do not hardcode a hidden favorite eff_weight fallback
+- prefer the smallest justified policy change
+- keep the public user contract aligned with --radix-eviction-policy marconi
+- scheduled run must stay bounded to 3 iterations
+
+Primary objective:
+- improve autotune-enabled request throughput
+
+Secondary objective:
+- lower mean TTFT
+
+At the end of this cron execution, produce a concise summary containing exactly:
+- iterations completed
+- best throughput seen this run
+- best mean TTFT seen this run
+- whether any local change is worth keeping
+- current target branch and commit
+- delivery note that results.tsv was updated in /workspace/autoresearch
+────────────────────────────────────────
+
+  ┊ 📚 skill     marconi-autoresearch-workspace  0.0s
+  ┊ 📚 skill     systematic-debugging  0.0s
+  ┊ 📋 plan      5 task(s)  0.0s
+  ┊ 📖 read      /workspace/autoresearch/README.md  2.5s
+  ┊ 📖 read      /workspace/autoresearch/program.md  2.5s
+  ┊ 📖 read      /workspace/autoresearch/context.md  2.5s
+  ┊ 📖 read      /workspace/autoresearch/AGENTS.md  2.5s
+  ┊ 📖 read      /workspace/autoresearch/results.tsv  2.5s
+  ┊ 💻 $         export SGLANG_REPO=/workspace/sglang MA...  0.6s
+  ┊ 🔎 find      context.txt  3.1s
+  ┊ 🔎 find      marconi.txt  1.8s
+  ┊ 💻 $         git branch --show-current && git rev-pa...  0.6s
+  ┊ 💻 $         git log --oneline -5  0.6s
+  ┊ 💻 $         git diff --stat  0.6s
+  ┊ 🔎 grep      centered 9-point|later-round|loc...  1.8s
+  ┊ 📖 read      ...g/srt/mem_cache/marconi_tuner.py  2.5s
+  ┊ 📖 read      ...mem_cache/marconi_replay_core.py  2.5s
+  ┊ 📖 read      .../mem_cache/marconi_cost_model.py  2.5s
+  ┊ 🔎 grep      weight_grid|last_tuned_eff_weigh...  1.2s
+  ┊ 📖 read      ...t/mem_cache/mamba_radix_cache.py  2.5s
+  ┊ 📖 read      ...sglang/srt/managers/scheduler.py  2.5s
+  ┊ 🔎 grep      marconi_tuning|last_tuned_eff_we...  1.2s
+  ┊ 🔎 grep      eff_weight  1.2s
+  ┊ 📖 read      ...t/mem_cache/mamba_radix_cache.py  2.5s
+  ┊ 📖 read      ...t/mem_cache/mamba_radix_cache.py  2.5s
+  ┊ 📖 read      ...t/mem_cache/mamba_radix_cache.py  2.5s

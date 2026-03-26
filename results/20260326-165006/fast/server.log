@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/.uv/python_install/cpython-3.10.20-linux-x86_64-gnu/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/.uv/python_install/cpython-3.10.20-linux-x86_64-gnu/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/workspace/sglang/python/sglang/launch_server.py", line 8, in <module>
+    from sglang.srt.server_args import prepare_server_args
+  File "/workspace/sglang/python/sglang/srt/server_args.py", line 31, in <module>
+    from sglang.srt.function_call.function_call_parser import FunctionCallParser
+  File "/workspace/sglang/python/sglang/srt/function_call/function_call_parser.py", line 12, in <module>
+    from sglang.srt.function_call.base_format_detector import BaseFormatDetector
+  File "/workspace/sglang/python/sglang/srt/function_call/base_format_detector.py", line 7, in <module>
+    from partial_json_parser.core.exceptions import MalformedJSON
+ModuleNotFoundError: No module named 'partial_json_parser'

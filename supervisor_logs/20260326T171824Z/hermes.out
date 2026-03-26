@@ -1,0 +1,10 @@
+  ┊ 📚 skill     marconi-autoresearch-workspace  0.0s
+  ┊ 📖 read      /workspace/autoresearch/README.md  2.5s
+  ┊ 📖 read      /workspace/autoresearch/program.md  2.5s
+  ┊ 📖 read      /workspace/autoresearch/context.md  2.5s
+  ┊ 📖 read      /workspace/autoresearch/AGENTS.md  2.5s
+  ┊ 📖 read      /workspace/sglang/context.txt  1.2s [error]
+  ┊ 📖 read      /workspace/sglang/marconi.txt  1.2s [error]
+  ┊ 📋 plan      4 task(s)  0.0s
+  ┊ 📖 read      /workspace/autoresearch/results.tsv  2.5s
+  ┊ 📖 read      /workspace/autoresearch/context.md  2.5s

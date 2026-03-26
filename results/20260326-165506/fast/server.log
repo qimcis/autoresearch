@@ -1,0 +1,22 @@
+/workspace/sglang/python/sglang/launch_server.py:51: UserWarning: 'python -m sglang.launch_server' is still supported, but 'sglang serve' is the recommended entrypoint.
+  Example: sglang serve --model-path <model> [options]
+  warnings.warn(
+Traceback (most recent call last):
+  File "/.uv/python_install/cpython-3.10.20-linux-x86_64-gnu/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/.uv/python_install/cpython-3.10.20-linux-x86_64-gnu/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/workspace/sglang/python/sglang/launch_server.py", line 59, in <module>
+    server_args = prepare_server_args(sys.argv[1:])
+  File "/workspace/sglang/python/sglang/srt/server_args.py", line 6253, in prepare_server_args
+    return ServerArgs.from_cli_args(raw_args)
+  File "/workspace/sglang/python/sglang/srt/server_args.py", line 5676, in from_cli_args
+    return cls(**kwargs)
+  File "<string>", line 359, in __init__
+  File "/workspace/sglang/python/sglang/srt/server_args.py", line 783, in __post_init__
+    self._handle_model_specific_adjustments()
+  File "/workspace/sglang/python/sglang/srt/server_args.py", line 1857, in _handle_model_specific_adjustments
+    self._handle_mamba_radix_cache(
+  File "/workspace/sglang/python/sglang/srt/server_args.py", line 2037, in _handle_mamba_radix_cache
+    assert (
+AssertionError: mamba extra_buffer is not supported for NemotronHForCausalLM model
