@@ -1,114 +1,174 @@
-# autoresearch
+# Marconi autotune research program for Codex
 
-This is an experiment to have the LLM do its own research.
+This repo is not the thing you are improving. The target repo is a checked-out `sglang` tree, usually on the `marconi-eviction` branch. This repo is only the fixed harness and experiment log.
+
+You are **Codex** running autonomous research for one narrow goal:
+
+- improve **Marconi autotune** behavior in SGLang
+- on a `4xH100` node
+- without changing the public user contract away from `--radix-eviction-policy marconi`
 
 ## Setup
 
-To set up a new experiment, work with the user to:
+Work with the human once at the start to make sure these are true:
 
-1. **Agree on a run tag**: propose a tag based on today's date (e.g. `mar5`). The branch `autoresearch/<tag>` must not already exist — this is a fresh run.
-2. **Create the branch**: `git checkout -b autoresearch/<tag>` from current master.
-3. **Read the in-scope files**: The repo is small. Read these files for full context:
-   - `README.md` — repository context.
-   - `prepare.py` — fixed constants, data prep, tokenizer, dataloader, evaluation. Do not modify.
-   - `train.py` — the file you modify. Model architecture, optimizer, training loop.
-4. **Verify data exists**: Check that `~/.cache/autoresearch/` contains data shards and a tokenizer. If not, tell the human to run `uv run prepare.py`.
-5. **Initialize results.tsv**: Create `results.tsv` with just the header row. The baseline will be recorded after the first run.
-6. **Confirm and go**: Confirm setup looks good.
+1. This repo is on a fresh branch, for example `autoresearch/marconi-<tag>`.
+2. `uv sync` has been run here.
+3. `SGLANG_REPO` points at the target `sglang` checkout.
+4. The target repo is on the branch you intend to improve, usually `marconi-eviction`.
+5. `results.tsv` exists with only the header row shown below.
 
-Once you get confirmation, kick off the experimentation.
+Do not modify this harness unless it is clearly wrong. Most code changes should happen in the target `sglang` repo.
 
-## Experimentation
+## In-scope files in the target repo
 
-Each experiment runs on a single GPU. The training script runs for a **fixed time budget of 5 minutes** (wall clock training time, excluding startup/compilation). You launch it simply as: `uv run train.py`.
+Default in-scope files:
 
-**What you CAN do:**
-- Modify `train.py` — this is the only file you edit. Everything is fair game: model architecture, optimizer, hyperparameters, training loop, batch size, model size, etc.
+- `python/sglang/srt/mem_cache/mamba_radix_cache.py`
+- `python/sglang/srt/mem_cache/marconi_tuner.py`
+- `python/sglang/srt/mem_cache/marconi_replay_core.py`
+- `python/sglang/srt/mem_cache/marconi_cost_model.py`
+- `python/sglang/srt/managers/scheduler.py`
 
-**What you CANNOT do:**
-- Modify `prepare.py`. It is read-only. It contains the fixed evaluation, data loading, tokenizer, and training constants (time budget, sequence length, etc).
-- Install new packages or add dependencies. You can only use what's already in `pyproject.toml`.
-- Modify the evaluation harness. The `evaluate_bpb` function in `prepare.py` is the ground truth metric.
+Touch other files only if there is a clear reason.
 
-**The goal is simple: get the lowest val_bpb.** Since the time budget is fixed, you don't need to worry about training time — it's always 5 minutes. Everything is fair game: change the architecture, the optimizer, the hyperparameters, the batch size, the model size. The only constraint is that the code runs without crashing and finishes within the time budget.
+Do not edit:
 
-**VRAM** is a soft constraint. Some increase is acceptable for meaningful val_bpb gains, but it should not blow up dramatically.
+- benchmark methodology in a way that breaks comparability
+- the public API away from `--radix-eviction-policy marconi`
+- `marconi-admission` unless the human explicitly redirects you
 
-**Simplicity criterion**: All else being equal, simpler is better. A small improvement that adds ugly complexity is not worth it. Conversely, removing something and getting equal or better results is a great outcome — that's a simplification win. When evaluating whether to keep a change, weigh the complexity cost against the improvement magnitude. A 0.001 val_bpb improvement that adds 20 lines of hacky code? Probably not worth it. A 0.001 val_bpb improvement from deleting code? Definitely keep. An improvement of ~0 but much simpler code? Keep.
+## Evaluation contract
 
-**The first run**: Your very first run should always be to establish the baseline, so you will run the training script as is.
+One experiment is:
 
-## Output format
-
-Once the script finishes it prints a summary like this:
-
-```
----
-val_bpb:          0.997900
-training_seconds: 300.1
-total_seconds:    325.9
-peak_vram_mb:     45060.2
-mfu_percent:      39.80
-total_tokens_M:   499.6
-num_steps:        953
-num_params_M:     50.3
-depth:            8
+```bash
+uv run train.py > run.log 2>&1
 ```
 
-Note that the script is configured to always stop after 5 minutes, so depending on the computing platform of this computer the numbers might look different. You can extract the key metric from the log file:
+This harness:
 
-```
-grep "^val_bpb:" run.log
-```
+- launches the target SGLang server from `SGLANG_REPO`
+- forces `PYTHONPATH` to that checkout
+- runs the Marconi benchmark
+- prints a compact summary
 
-## Logging results
+Use:
 
-When an experiment is done, log it to `results.tsv` (tab-separated, NOT comma-separated — commas break in descriptions).
+- `MARCONI_EVAL_MODE=fast` for the main loop
+- `MARCONI_EVAL_MODE=full` only for promising candidates
 
-The TSV has a header row and 5 columns:
+Optional extra server args:
 
-```
-commit	val_bpb	memory_gb	status	description
-```
-
-1. git commit hash (short, 7 chars)
-2. val_bpb achieved (e.g. 1.234567) — use 0.000000 for crashes
-3. peak memory in GB, round to .1f (e.g. 12.3 — divide peak_vram_mb by 1024) — use 0.0 for crashes
-4. status: `keep`, `discard`, or `crash`
-5. short text description of what this experiment tried
-
-Example:
-
-```
-commit	val_bpb	memory_gb	status	description
-a1b2c3d	0.997900	44.0	keep	baseline
-b2c3d4e	0.993200	44.2	keep	increase LR to 0.04
-c3d4e5f	1.005000	44.0	discard	switch to GeLU activation
-d4e5f6g	0.000000	0.0	crash	double model width (OOM)
+```bash
+export MARCONI_EXTRA_SERVER_ARGS="..."
 ```
 
-## The experiment loop
+## Primary goal
 
-The experiment runs on a dedicated branch (e.g. `autoresearch/mar5` or `autoresearch/mar5-gpu0`).
+Optimize autotune quality on the Marconi eviction path.
 
-LOOP FOREVER:
+The benchmark objective is:
 
-1. Look at the git state: the current branch/commit we're on
-2. Tune `train.py` with an experimental idea by directly hacking the code.
-3. git commit
-4. Run the experiment: `uv run train.py > run.log 2>&1` (redirect everything — do NOT use tee or let output flood your context)
-5. Read out the results: `grep "^val_bpb:\|^peak_vram_mb:" run.log`
-6. If the grep output is empty, the run crashed. Run `tail -n 50 run.log` to read the Python stack trace and attempt a fix. If you can't get things to work after more than a few attempts, give up.
-7. Record the results in the tsv (NOTE: do not commit the results.tsv file, leave it untracked by git)
-8. If val_bpb improved (lower), you "advance" the branch, keeping the git commit
-9. If val_bpb is equal or worse, you git reset back to where you started
+1. the run must complete cleanly
+2. autotune should start and apply at least one round
+3. higher request throughput is better
+4. lower mean TTFT is better
 
-The idea is that you are a completely autonomous researcher trying things out. If they work, keep. If they don't, discard. And you're advancing the branch so that you can iterate. If you feel like you're getting stuck in some way, you can rewind but you should probably do this very very sparingly (if ever).
+Use throughput as the primary keep/discard signal. Use TTFT as the tiebreaker.
 
-**Timeout**: Each experiment should take ~5 minutes total (+ a few seconds for startup and eval overhead). If a run exceeds 10 minutes, kill it and treat it as a failure (discard and revert).
+## What counts as success
 
-**Crashes**: If a run crashes (OOM, or a bug, or etc.), use your judgment: If it's something dumb and easy to fix (e.g. a typo, a missing import), fix it and re-run. If the idea itself is fundamentally broken, just skip it, log "crash" as the status in the tsv, and move on.
+Keep a change only if it improves the autotune run under the evaluation mode you are using.
 
-**NEVER STOP**: Once the experiment loop has begun (after the initial setup), do NOT pause to ask the human if you should continue. Do NOT ask "should I keep going?" or "is this a good stopping point?". The human might be asleep, or gone from a computer and expects you to continue working *indefinitely* until you are manually stopped. You are autonomous. If you run out of ideas, think harder — read papers referenced in the code, re-read the in-scope files for new angles, try combining previous near-misses, try more radical architectural changes. The loop runs until the human interrupts you, period.
+Do not keep changes that:
 
-As an example use case, a user might leave you running while they sleep. If each experiment takes you ~5 minutes then you can run approx 12/hour, for a total of about 100 over the duration of the average human sleep. The user then wakes up to experimental results, all completed by you while they slept!
+- only make fixed `eff_weight` runs better while leaving autotune weak
+- add unstable live-apply behavior
+- change policy in a way that obviously overfits one pathological late-round window
+- add large complexity for tiny or unclear gains
+
+## Results logging
+
+Log every experiment to `results.tsv` and keep it untracked.
+
+Header:
+
+```text
+target_commit	mode	throughput	mean_ttft_ms	autotune_applied	last_tuned_eff_weight	status	description
+```
+
+Status values:
+
+- `keep`
+- `discard`
+- `crash`
+
+Examples:
+
+```text
+target_commit	mode	throughput	mean_ttft_ms	autotune_applied	last_tuned_eff_weight	status	description
+abc1234	fast	10.31	178966.25	1	1.0	keep	stabilize flat-score rounds to current weight
+def5678	fast	9.84	183210.10	1	0.0	discard	larger second-round window
+ghi9012	fast	0.00	0.00	0		crash	broken apply-path mutation
+```
+
+## Experiment loop
+
+Loop forever until the human stops you.
+
+1. Check target repo branch, commit, and dirty state.
+2. Form one narrow hypothesis about autotune.
+3. Edit the target repo.
+4. Commit in the target repo.
+5. Run one benchmark:
+   - `MARCONI_EVAL_MODE=fast uv run train.py > run.log 2>&1`
+6. Read the summary from `run.log`.
+7. Log the result in `results.tsv`.
+8. If the change is better, keep the target-repo commit.
+9. If the change is worse or crashes, reset the target repo back to the previous good commit.
+10. Periodically confirm promising changes with:
+   - `MARCONI_EVAL_MODE=full uv run train.py > run.log 2>&1`
+
+## Current research direction
+
+Start from the current Marconi autotune state that already fixed:
+
+- late-result harvesting
+- unsafe hot-path apply
+- overlarge first tuning window
+- destructive flat-score fallback to `0.0`
+
+The remaining problem is policy quality. Fixed nonzero weights are still stronger than autotune on the saturated shared-prefix workload.
+
+Good next ideas:
+
+- better later-round window construction
+- less noisy or more stable later-round selection
+- cheaper first useful round without breaking steady-state policy
+- objective refinements that help autotune approach healthy fixed-weight runs
+
+Bad next ideas:
+
+- changing public flags
+- adding broad fallbacks
+- hardcoding a favorite weight as a hidden default
+- breaking comparability with the existing Marconi benchmark setup
+
+## Simplicity rule
+
+If two changes perform similarly, keep the simpler one.
+
+Do not accumulate clever policy logic unless the benchmark clearly justifies it.
+
+## Codex-specific note
+
+You are Codex, not a generic chat assistant. Do the work directly:
+
+- inspect the target repo
+- make one change
+- commit it
+- run one experiment
+- keep or discard
+
+Do not stop to ask the human whether you should continue. Continue until interrupted.

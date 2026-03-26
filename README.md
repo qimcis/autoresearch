@@ -1,92 +1,144 @@
-# autoresearch
+# autoresearch for Marconi autotuning
 
-![teaser](progress.png)
+This fork repurposes `autoresearch` from single-GPU language-model training into a fixed benchmark harness for **Marconi autotuning in SGLang**.
 
-*One day, frontier AI research used to be done by meat computers in between eating, sleeping, having other fun, and synchronizing once in a while using sound wave interconnect in the ritual of "group meeting". That era is long gone. Research is now entirely the domain of autonomous swarms of AI agents running across compute cluster megastructures in the skies. The agents claim that we are now in the 10,205th generation of the code base, in any case no one could tell if that's right or wrong as the "code" is now a self-modifying binary that has grown beyond human comprehension. This repo is the story of how it all began. -@karpathy, March 2026*.
+The target use case is:
+- run on a `4xH100` node
+- point at a checked-out `sglang` repo, typically the `marconi-eviction` branch
+- let **Codex** iteratively edit the target Marconi autotune implementation
+- use this repo only as the evaluation harness and experiment log
 
-The idea: give an AI agent a small but real LLM training setup and let it experiment autonomously overnight. It modifies the code, trains for 5 minutes, checks if the result improved, keeps or discards, and repeats. You wake up in the morning to a log of experiments and (hopefully) a better model. The training code here is a simplified single-GPU implementation of [nanochat](https://github.com/karpathy/nanochat). The core idea is that you're not touching any of the Python files like you normally would as a researcher. Instead, you are programming the `program.md` Markdown files that provide context to the AI agents and set up your autonomous research org. The default `program.md` in this repo is intentionally kept as a bare bones baseline, though it's obvious how one would iterate on it over time to find the "research org code" that achieves the fastest research progress, how you'd add more agents to the mix, etc. A bit more context on this project is here in this [tweet](https://x.com/karpathy/status/2029701092347630069) and [this tweet](https://x.com/karpathy/status/2031135152349524125).
+The core design is still intentionally small:
+- `prepare.py` is the fixed harness and runtime utilities
+- `train.py` runs one Marconi autotune experiment and prints a compact summary
+- `program.md` is the Codex research loop
 
-## How it works
+## What this fork is optimizing
 
-The repo is deliberately kept small and only really has three files that matter:
+The goal is not generic Marconi eviction. The goal is specifically:
 
-- **`prepare.py`** — fixed constants, one-time data prep (downloads training data, trains a BPE tokenizer), and runtime utilities (dataloader, evaluation). Not modified.
-- **`train.py`** — the single file the agent edits. Contains the full GPT model, optimizer (Muon + AdamW), and training loop. Everything is fair game: architecture, hyperparameters, optimizer, batch size, etc. **This file is edited and iterated on by the agent**.
-- **`program.md`** — baseline instructions for one agent. Point your agent here and let it go. **This file is edited and iterated on by the human**.
+- improve **autotune** behavior for Marconi on hybrid models
+- keep the public API aligned with `--radix-eviction-policy marconi`
+- evaluate against the shared-prefix serving workload that already exposed useful signal for Marconi
 
-By design, training runs for a **fixed 5-minute time budget** (wall clock, excluding startup/compilation), regardless of the details of your compute. The metric is **val_bpb** (validation bits per byte) — lower is better, and vocab-size-independent so architectural changes are fairly compared.
+This fork is built around the benchmark story you already established:
+- fixed nonzero `eff_weight` can outperform `main`
+- autotune correctness and stability matter
+- autotune should be evaluated by throughput, TTFT, and whether tuning rounds actually finish and apply during serving
 
-If you are new to neural networks, this ["Dummy's Guide"](https://x.com/hooeem/status/2030720614752039185) looks pretty good for a lot more context.
+## Repository roles
+
+### Fixed harness
+
+`prepare.py` contains:
+- target repo discovery
+- benchmark configuration
+- server launch helpers
+- benchmark execution
+- summary extraction
+
+This file is treated as fixed infrastructure.
+
+### Mutable evaluation entrypoint
+
+`train.py` runs one experiment against the target `sglang` checkout and prints a summary in a grep-friendly format.
+
+### Codex instructions
+
+`program.md` tells Codex:
+- which target repo to edit
+- which files are in scope
+- how to run one experiment
+- how to log and keep/discard results
+
+## Target repo contract
+
+By default the harness expects:
+- `SGLANG_REPO=/home/qi/sglang`
+- branch under test is handled in the target repo itself
+- the target repo is already on the branch you want Codex to work on
+
+The harness runs the target repo by forcing:
+- `PYTHONPATH=<target-repo>/python`
+- `cwd=<target-repo>`
+
+This avoids accidentally benchmarking some other editable install.
+
+## Default benchmark modes
+
+Two modes are built in:
+
+- `fast`
+  - reduced shared-prefix workload for iteration
+  - intended for the main autonomous loop
+- `full`
+  - the original larger saturated shared-prefix workload
+  - intended only for promising candidates
+
+Set the mode with:
+
+```bash
+MARCONI_EVAL_MODE=fast uv run train.py
+MARCONI_EVAL_MODE=full uv run train.py
+```
+
+## Required environment
+
+- `4` visible NVIDIA GPUs
+- working SGLang checkout with the Marconi branch under test
+- model access for `Qwen/Qwen3-Next-80B-A3B-Instruct`
+- `uv`
+
+Optional environment variables:
+
+```bash
+export SGLANG_REPO=/path/to/sglang
+export MARCONI_MODEL_PATH=Qwen/Qwen3-Next-80B-A3B-Instruct
+export MARCONI_EVAL_MODE=fast
+export MARCONI_RESULTS_DIR=/path/to/results
+export MARCONI_EXTRA_SERVER_ARGS="--marconi-eff-weight 0 --disable-marconi-autotune"
+export MARCONI_BASE_URL=http://127.0.0.1:30000
+```
 
 ## Quick start
 
-**Requirements:** A single NVIDIA GPU (tested on H100), Python 3.10+, [uv](https://docs.astral.sh/uv/).
-
 ```bash
-
-# 1. Install uv project manager (if you don't already have it)
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# 2. Install dependencies
 uv sync
-
-# 3. Download data and train tokenizer (one-time, ~2 min)
-uv run prepare.py
-
-# 4. Manually run a single training experiment (~5 min)
 uv run train.py
 ```
 
-If the above commands all work ok, your setup is working and you can go into autonomous research mode.
+The run prints a summary like:
 
-## Running the agent
-
-Simply spin up your Claude/Codex or whatever you want in this repo (and disable all permissions), then you can prompt something like:
-
-```
-Hi have a look at program.md and let's kick off a new experiment! let's do the setup first.
-```
-
-The `program.md` file is essentially a super lightweight "skill".
-
-## Project structure
-
-```
-prepare.py      — constants, data prep + runtime utilities (do not modify)
-train.py        — model, optimizer, training loop (agent modifies this)
-program.md      — agent instructions
-pyproject.toml  — dependencies
+```text
+---
+status: completed
+mode: fast
+target_branch: marconi-eviction
+target_commit: abc1234
+request_throughput: 10.31
+mean_ttft_ms: 178966.25
+mean_e2e_latency_ms: 190000.00
+autotune_applied: 1
+autotune_rounds: 1
+current_eff_weight: 1.0
+last_tuned_eff_weight: 1.0
+results_jsonl: /.../result.jsonl
+server_log: /.../server.log
 ```
 
-## Design choices
+## Intended Codex workflow
 
-- **Single file to modify.** The agent only touches `train.py`. This keeps the scope manageable and diffs reviewable.
-- **Fixed time budget.** Training always runs for exactly 5 minutes, regardless of your specific platform. This means you can expect approx 12 experiments/hour and approx 100 experiments while you sleep. There are two upsides of this design decision. First, this makes experiments directly comparable regardless of what the agent changes (model size, batch size, architecture, etc). Second, this means that autoresearch will find the most optimal model for your platform in that time budget. The downside is that your runs (and results) become not comparable to other people running on other compute platforms.
-- **Self-contained.** No external dependencies beyond PyTorch and a few small packages. No distributed training, no complex configs. One GPU, one file, one metric.
+1. Open this repo in Codex.
+2. Read `program.md`.
+3. Let Codex edit the target `sglang` repo, not this harness, unless the harness itself is wrong.
+4. Use `uv run train.py > run.log 2>&1` for one experiment.
+5. Log the result in `results.tsv`.
+6. Keep only target-repo changes that improve the benchmark under the rules in `program.md`.
 
-## Platform support
+## What this fork is not
 
-This code currently requires that you have a single NVIDIA GPU. In principle it is quite possible to support CPU, MPS and other platforms but this would also bloat the code. I'm not 100% sure that I want to take this on personally right now. People can reference (or have their agents reference) the full/parent nanochat repository that has wider platform support and shows the various solutions (e.g. a Flash Attention 3 kernels fallback implementation, generic device support, autodetection, etc.), feel free to create forks or discussions for other platforms and I'm happy to link to them here in the README in some new notable forks section or etc.
+- not a generic SGLang benchmark runner
+- not a replacement for your benchmark notes
+- not a distributed orchestration system
 
-Seeing as there seems to be a lot of interest in tinkering with autoresearch on much smaller compute platforms than an H100, a few extra words. If you're going to try running autoresearch on smaller computers (Macbooks etc.), I'd recommend one of the forks below. On top of this, here are some recommendations for how to tune the defaults for much smaller models for aspiring forks:
-
-1. To get half-decent results I'd use a dataset with a lot less entropy, e.g. this [TinyStories dataset](https://huggingface.co/datasets/karpathy/tinystories-gpt4-clean). These are GPT-4 generated short stories. Because the data is a lot narrower in scope, you will see reasonable results with a lot smaller models (if you try to sample from them after training).
-2. You might experiment with decreasing `vocab_size`, e.g. from 8192 down to 4096, 2048, 1024, or even - simply byte-level tokenizer with 256 possibly bytes after utf-8 encoding.
-3. In `prepare.py`, you'll want to lower `MAX_SEQ_LEN` a lot, depending on the computer even down to 256 etc. As you lower `MAX_SEQ_LEN`, you may want to experiment with increasing `DEVICE_BATCH_SIZE` in `train.py` slightly to compensate. The number of tokens per fwd/bwd pass is the product of these two.
-4. Also in `prepare.py`, you'll want to decrease `EVAL_TOKENS` so that your validation loss is evaluated on a lot less data.
-5. In `train.py`, the primary single knob that controls model complexity is the `DEPTH` (default 8, here). A lot of variables are just functions of this, so e.g. lower it down to e.g. 4.
-6. You'll want to most likely use `WINDOW_PATTERN` of just "L", because "SSSL" uses alternating banded attention pattern that may be very inefficient for you. Try it.
-7. You'll want to lower `TOTAL_BATCH_SIZE` a lot, but keep it powers of 2, e.g. down to `2**14` (~16K) or so even, hard to tell.
-
-I think these would be the reasonable hyperparameters to play with. Ask your favorite coding agent for help and copy paste them this guide, as well as the full source code.
-
-## Notable forks
-
-- [miolini/autoresearch-macos](https://github.com/miolini/autoresearch-macos) (MacOS)
-- [trevin-creator/autoresearch-mlx](https://github.com/trevin-creator/autoresearch-mlx) (MacOS)
-- [jsegov/autoresearch-win-rtx](https://github.com/jsegov/autoresearch-win-rtx) (Windows)
-- [andyluo7/autoresearch](https://github.com/andyluo7/autoresearch) (AMD)
-
-## License
-
-MIT
+It is a narrow research harness for one concrete problem: **Marconi autotune policy quality on 4xH100**.
