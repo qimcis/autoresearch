@@ -3,7 +3,7 @@
 This fork repurposes `autoresearch` from single-GPU language-model training into a fixed benchmark harness for **Marconi autotuning in SGLang**.
 
 The target use case is:
-- run on a `4xH100` node
+- run on either a `4xH100` node for final validation or a `1xA100` node for cheaper iteration
 - point at a checked-out `sglang` repo, typically the `marconi-eviction` branch
 - let **Codex** iteratively edit the target Marconi autotune implementation
 - use this repo only as the evaluation harness and experiment log
@@ -93,9 +93,12 @@ Optional environment variables:
 
 ```bash
 export SGLANG_REPO=/path/to/sglang
-export MARCONI_MODEL_PATH=Qwen/Qwen3-Next-80B-A3B-Instruct
+export MARCONI_MODEL_PATH=nvidia/NVIDIA-Nemotron-Nano-9B-v2
 export MARCONI_EVAL_MODE=fast
 export MARCONI_RESULTS_DIR=/path/to/results
+export MARCONI_TP_SIZE=1
+export MARCONI_MIN_GPUS=1
+export MARCONI_CONTEXT_LENGTH=32768
 export MARCONI_EXTRA_SERVER_ARGS="--marconi-eff-weight 0 --disable-marconi-autotune"
 export MARCONI_BASE_URL=http://127.0.0.1:30000
 ```
@@ -106,6 +109,15 @@ export MARCONI_BASE_URL=http://127.0.0.1:30000
 uv sync
 uv run train.py
 ```
+
+For Hermes on `1xA100`:
+
+```bash
+chmod +x start_hermes_a100.sh
+./start_hermes_a100.sh
+```
+
+Then paste the contents of `hermes_kickoff_prompt.txt` into Hermes.
 
 The run prints a summary like:
 
@@ -141,4 +153,4 @@ server_log: /.../server.log
 - not a replacement for your benchmark notes
 - not a distributed orchestration system
 
-It is a narrow research harness for one concrete problem: **Marconi autotune policy quality on 4xH100**.
+It is a narrow research harness for one concrete problem: **Marconi autotune policy quality on real hybrid-model serving workloads**.

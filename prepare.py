@@ -15,6 +15,10 @@ import torch
 DEFAULT_MODEL_PATH = "Qwen/Qwen3-Next-80B-A3B-Instruct"
 DEFAULT_BASE_URL = "http://127.0.0.1:30000"
 DEFAULT_RESULTS_DIR = "results"
+DEFAULT_TP_SIZE = 4
+DEFAULT_CONTEXT_LENGTH = 32768
+DEFAULT_PAGE_SIZE = 1
+DEFAULT_MAMBA_FULL_MEMORY_RATIO = "0.9"
 
 
 @dataclass(frozen=True)
@@ -63,6 +67,28 @@ def model_path() -> str:
     return os.environ.get("MARCONI_MODEL_PATH", DEFAULT_MODEL_PATH)
 
 
+def tensor_parallel_size() -> int:
+    return int(os.environ.get("MARCONI_TP_SIZE", str(DEFAULT_TP_SIZE)))
+
+
+def min_gpu_count() -> int:
+    return int(os.environ.get("MARCONI_MIN_GPUS", str(tensor_parallel_size())))
+
+
+def context_length() -> int:
+    return int(os.environ.get("MARCONI_CONTEXT_LENGTH", str(DEFAULT_CONTEXT_LENGTH)))
+
+
+def page_size() -> int:
+    return int(os.environ.get("MARCONI_PAGE_SIZE", str(DEFAULT_PAGE_SIZE)))
+
+
+def mamba_full_memory_ratio() -> str:
+    return os.environ.get(
+        "MARCONI_MAMBA_FULL_MEMORY_RATIO", DEFAULT_MAMBA_FULL_MEMORY_RATIO
+    )
+
+
 def base_url() -> str:
     return os.environ.get("MARCONI_BASE_URL", DEFAULT_BASE_URL).rstrip("/")
 
@@ -102,7 +128,8 @@ def ensure_repo_layout(repo: Path) -> None:
         )
 
 
-def ensure_gpu_count(min_count: int = 4) -> None:
+def ensure_gpu_count(min_count: int | None = None) -> None:
+    min_count = min_count or min_gpu_count()
     if not torch.cuda.is_available():
         raise RuntimeError("CUDA is not available")
     count = torch.cuda.device_count()
@@ -182,9 +209,9 @@ def launch_server(repo: Path, run_dir: Path) -> tuple[subprocess.Popen[str], Pat
         "--model-path",
         model_path(),
         "--tp-size",
-        "4",
+        str(tensor_parallel_size()),
         "--context-length",
-        "32768",
+        str(context_length()),
         "--schedule-policy",
         "lpm",
         "--mamba-scheduler-strategy",
@@ -192,9 +219,9 @@ def launch_server(repo: Path, run_dir: Path) -> tuple[subprocess.Popen[str], Pat
         "--mamba-ssm-dtype",
         "bfloat16",
         "--mamba-full-memory-ratio",
-        "0.9",
+        mamba_full_memory_ratio(),
         "--page-size",
-        "1",
+        str(page_size()),
         "--enable-metrics",
         "--radix-eviction-policy",
         "marconi",

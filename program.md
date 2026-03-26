@@ -1,11 +1,11 @@
-# Marconi autotune research program for Codex
+# Marconi autotune research program
 
 This repo is not the thing you are improving. The target repo is a checked-out `sglang` tree, usually on the `marconi-eviction` branch. This repo is only the fixed harness and experiment log.
 
-You are **Codex** running autonomous research for one narrow goal:
+You are an autonomous coding agent running research for one narrow goal:
 
 - improve **Marconi autotune** behavior in SGLang
-- on a `4xH100` node
+- on a smaller single-node setup for iteration, with final validation on larger hardware
 - without changing the public user contract away from `--radix-eviction-policy marconi`
 
 ## Setup
@@ -120,13 +120,13 @@ Loop forever until the human stops you.
 1. Check target repo branch, commit, and dirty state.
 2. Form one narrow hypothesis about autotune.
 3. Edit the target repo.
-4. Commit in the target repo.
+4. Do not commit unless the human explicitly asks for commits.
 5. Run one benchmark:
    - `MARCONI_EVAL_MODE=fast uv run train.py > run.log 2>&1`
 6. Read the summary from `run.log`.
 7. Log the result in `results.tsv`.
-8. If the change is better, keep the target-repo commit.
-9. If the change is worse or crashes, reset the target repo back to the previous good commit.
+8. If the change is better, keep the local target-repo change.
+9. If the change is worse or crashes, reset the target repo back to the previous good state.
 10. Periodically confirm promising changes with:
    - `MARCONI_EVAL_MODE=full uv run train.py > run.log 2>&1`
 
@@ -161,13 +161,12 @@ If two changes perform similarly, keep the simpler one.
 
 Do not accumulate clever policy logic unless the benchmark clearly justifies it.
 
-## Codex-specific note
+## Agent note
 
-You are Codex, not a generic chat assistant. Do the work directly:
+You are not a generic chat assistant. Do the work directly:
 
 - inspect the target repo
 - make one change
-- commit it
 - run one experiment
 - keep or discard
 

@@ -1,0 +1,34 @@
+Read `README.md`, `program.md`, `context.md`, and `AGENTS.md` in this workspace first. Then read `${SGLANG_REPO}/context.txt` and `${SGLANG_REPO}/marconi.txt` if they exist.
+
+You are using this repo only as the evaluation harness and experiment log. The actual code you should improve is in `SGLANG_REPO`, on the `marconi-eviction` branch or its clean worktree equivalent.
+
+Current operating assumptions:
+- hardware: `1xA100`
+- model: `nvidia/NVIDIA-Nemotron-Nano-9B-v2`
+- tensor parallel size: `1`
+- public API must stay aligned with `--radix-eviction-policy marconi`
+
+Your task:
+1. Inspect the target `sglang` worktree and confirm branch, commit, and dirty state.
+2. Focus on Marconi autotune policy quality in the target repo.
+3. Make one narrow code-level change in the target repo.
+4. Run one experiment with `uv run train.py > run.log 2>&1`.
+5. Read the summary from `run.log`.
+6. Log the result in `results.tsv`.
+7. Keep or revert the local target-repo change.
+8. Immediately continue to the next iteration unless interrupted.
+
+Constraints:
+- do not commit unless explicitly asked
+- do not mainly edit this harness unless it is broken
+- do not change benchmark methodology in a way that breaks comparability
+- do not hardcode a favorite `eff_weight` as a hidden fallback
+- prefer small, justified policy changes
+
+Primary objective:
+- improve autotune-enabled request throughput
+
+Secondary objective:
+- lower mean TTFT
+
+Do not stop to summarize after a batch of experiments. Continue autonomously until interrupted.
