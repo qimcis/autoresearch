@@ -1,0 +1,240 @@
+
+██╗  ██╗███████╗██████╗ ███╗   ███╗███████╗███████╗       █████╗  ██████╗ ███████╗███╗   ██╗████████╗
+██║  ██║██╔════╝██╔══██╗████╗ ████║██╔════╝██╔════╝      ██╔══██╗██╔════╝ ██╔════╝████╗  ██║╚══██╔══╝
+███████║█████╗  ██████╔╝██╔████╔██║█████╗  ███████╗█████╗███████║██║  ███╗█████╗  ██╔██╗ ██║   ██║
+██╔══██║██╔══╝  ██╔══██╗██║╚██╔╝██║██╔══╝  ╚════██║╚════╝██╔══██║██║   ██║██╔══╝  ██║╚██╗██║   ██║
+██║  ██║███████╗██║  ██║██║ ╚═╝ ██║███████╗███████║      ██║  ██║╚██████╔╝███████╗██║ ╚████║   ██║
+╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝╚══════╝      ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝
+
+╭────────────────────────────────────────────────────────────────── Hermes Agent v0.4.0 (2026.3.23) ──────────────────────────────────────────────────────────────────╮
+│                                   Available Tools                                                                                                                   │
+│  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⡀⠀⣀⣀⠀⢀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   browser: browser_back, browser_click, ...                                                                                         │
+│  ⠀⠀⠀⠀⠀⠀⢀⣠⣴⣾⣿⣿⣇⠸⣿⣿⠇⣸⣿⣿⣷⣦⣄⡀⠀⠀⠀⠀⠀⠀   clarify: clarify                                                                                                                  │
+│  ⠀⢀⣠⣴⣶⠿⠋⣩⡿⣿⡿⠻⣿⡇⢠⡄⢸⣿⠟⢿⣿⢿⣍⠙⠿⣶⣦⣄⡀⠀   code_execution: execute_code                                                                                                      │
+│  ⠀⠀⠉⠉⠁⠶⠟⠋⠀⠉⠀⢀⣈⣁⡈⢁⣈⣁⡀⠀⠉⠀⠙⠻⠶⠈⠉⠉⠀⠀   cronjob: cronjob                                                                                                                  │
+│  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣴⣿⡿⠛⢁⡈⠛⢿⣿⣦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   delegation: delegate_task                                                                                                         │
+│  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠿⣿⣦⣤⣈⠁⢠⣴⣿⠿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   file: patch, read_file, search_files, write_file                                                                                  │
+│  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠻⢿⣿⣦⡉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   homeassistant: ha_call_service, ha_get_state, ...                                                                                 │
+│  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢷⣦⣈⠛⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   honcho: honcho_conclude, honcho_context, ...                                                                                      │
+│  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣴⠦⠈⠙⠿⣦⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   (and 11 more toolsets...)                                                                                                         │
+│  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣿⣤⡈⠁⢤⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀                                                                                                                                     │
+│  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠷⠄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   Available Skills                                                                                                                  │
+│  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⠑⢶⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   autonomous-ai-agents: claude-code, codex, hermes-agent-spawning, open...                                                          │
+│  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⠁⢰⡆⠈⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   creative: ascii-art, ascii-video, excalidraw                                                                                      │
+│  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠳⠈⣡⠞⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   data-science: jupyter-live-kernel                                                                                                 │
+│  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   dogfood: hermes-agent-setup, hermes-batch-supervisor, ma...                                                                       │
+│                                   email: himalaya                                                                                                                   │
+│      gpt-5.4 · Nous Research      gaming: minecraft-modpack-server, pokemon-player                                                                                  │
+│      /workspace/autoresearch      general: dogfood                                                                                                                  │
+│  Session: 20260327_043255_a03c09  github: codebase-inspection, github-auth, github-code-r...                                                                        │
+│                                   inference-sh: inference-sh-cli                                                                                                    │
+│                                   leisure: find-nearby                                                                                                              │
+│                                   mcp: mcporter, native-mcp                                                                                                         │
+│                                   media: gif-search, heartmula, songsee, youtube-content                                                                            │
+│                                   mlops: audiocraft-audio-generation, axolotl, chroma, c...                                                                         │
+│                                   note-taking: obsidian                                                                                                             │
+│                                   productivity: google-workspace, linear, nano-pdf, notion, ocr...                                                                  │
+│                                   red-teaming: godmode                                                                                                              │
+│                                   research: arxiv, blogwatcher, domain-intel, duckduckgo-se...                                                                      │
+│                                   smart-home: openhue                                                                                                               │
+│                                   social-media: xitter                                                                                                              │
+│                                   software-development: code-review, plan, requesting-code-review, suba...                                                          │
+│                                                                                                                                                                     │
+│                                   29 tools · 94 skills · /help for commands                                                                                         │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+Query: Read /workspace/autoresearch/README.md, /workspace/autoresearch/program.md, /workspace/autoresearch/context.md, and /workspace/autoresearch/AGENTS.md first. 
+Then read ${SGLANG_REPO}/context.txt and ${SGLANG_REPO}/marconi.txt if they exist.
+
+You are using /workspace/autoresearch only as the evaluation harness and experiment log. The code to improve is in /workspace/sglang on branch marconi-eviction or its 
+current clean worktree equivalent. Do not commit.
+
+Environment and operating assumptions for this batch:
+- workspace: /workspace/autoresearch
+- target repo: /workspace/sglang
+- target branch: marconi-eviction
+- hardware proxy: 1xH100
+- model: nvidia/NVIDIA-Nemotron-Nano-9B-v2
+- tensor parallel size: 1
+- eval mode: fast
+- context length: 32768
+- public API must stay aligned with --radix-eviction-policy marconi
+- for this Nemotron setup, use MARCONI_EXTRA_SERVER_ARGS='--mamba-scheduler-strategy no_buffer' when running train.py
+
+At the very start of the batch, explicitly rebuild continuity before changing anything:
+1. cd /workspace/autoresearch
+2. ensure these env vars are set for this run:
+   - SGLANG_REPO=/workspace/sglang
+   - MARCONI_MODEL_PATH=nvidia/NVIDIA-Nemotron-Nano-9B-v2
+   - MARCONI_TP_SIZE=1
+   - MARCONI_MIN_GPUS=1
+   - MARCONI_EVAL_MODE=fast
+   - MARCONI_CONTEXT_LENGTH=32768
+   - MARCONI_RESULTS_DIR=/workspace/autoresearch/results
+   - MARCONI_EXTRA_SERVER_ARGS=--mamba-scheduler-strategy no_buffer
+3. read /workspace/autoresearch/results.tsv
+4. read /workspace/autoresearch/baselines.tsv if it exists
+5. inspect git branch, commit, and diff state in /workspace/sglang
+6. read /workspace/autoresearch/context.md again
+7. continue from the best current local repo state you find rather than starting from scratch
+
+This batch is bounded. Do exactly 3 research iterations, no more and no less.
+
+Current anchor design to preserve unless a truly compelling reason appears:
+- the current best local result came from: "bootstrap tuning uses the shortest recent suffix that satisfies an insert-event replay budget so round 1 learns from denser
+pressure-bearing traffic"
+- treat that bootstrap suffix / insert-event replay-budget idea as the fixed anchor design for now
+- do NOT spend most iterations re-perturbing or re-tuning that bootstrap anchor
+- only change the bootstrap anchor itself if you have a strong, explicit reason and can articulate why the change is likely to beat the current best rather than just 
+mutate it
+
+New search objective:
+- assume the bootstrap anchor is correct enough
+- search only for a complementary second-stage improvement that pairs well with it
+- do not keep re-optimizing the same winning bootstrap family in isolation
+
+Complementary second-stage hypothesis families, in order:
+1. later-round pressure-aware windowing that builds on the winning bootstrap anchor
+   - keep the insert-event replay-budget bootstrap idea
+   - redesign only the later-round / post-apply tuning window construction
+   - prefer windows that capture meaningful post-bootstrap pressure rather than weak trailing history
+2. later-round objective redesign, conditional on the winning bootstrap anchor
+   - keep the bootstrap anchor fixed
+   - improve later-round selection with a robust objective that better compares candidates near the active weight
+   - focus on marginal improvement over the active weight, local support, and robustness under noisy later-round surfaces
+3. staged controller / second-phase tuner redesign on top of the bootstrap anchor
+   - keep bootstrap discovery as the anchor
+   - redesign what happens after bootstrap: validation, hysteresis, confirmation, refinement scheduling, or freeze behavior
+   - explicitly separate bootstrap discovery from later steady-state control
+4. only after the above: uncertainty handling integrated into the anchored two-stage design
+   - weak-surface freeze/skip is allowed only as part of the anchored later-round/controller redesign, not as a standalone threshold tweak
+
+Exploration policy:
+- In each batch, at least 2 of the 3 iterations must target complementary second-stage improvements on top of the current bootstrap anchor.
+- Do not spend two consecutive iterations on bootstrap-anchor mutations unless one clearly improved.
+- Prefer "what complements the winning bootstrap design?" over "how do we tweak the winning bootstrap design again?"
+- If an iteration touches bootstrap, the next iteration should target later-round logic, objective, or controller behavior instead.
+- Avoid tiny grid/threshold tweaks unless they are clearly supporting one of the complementary second-stage redesigns above.
+
+Recommended batch pattern:
+- one iteration on later-round pressure-aware windowing
+- one iteration on later-round robust objective design
+- one iteration on staged post-bootstrap controller / validation / hysteresis behavior
+If a clear win appears in one track, the next batch may continue that track once before rotating.
+
+For each of the 3 iterations:
+1. inspect current target repo branch/commit/dirty state
+2. choose one hypothesis from the complementary second-stage tracks above
+3. make one small-to-medium code-level change in /workspace/sglang only
+4. run exactly one experiment from /workspace/autoresearch with:
+   uv run --no-sync train.py > run.log 2>&1
+5. read the summary from /workspace/autoresearch/run.log
+6. append a row to /workspace/autoresearch/results.tsv
+7. keep the local target-repo change only if it improves autotune-enabled throughput for this proxy setup; otherwise revert just your last change
+8. do not commit
+
+Constraints:
+- do not mainly edit the harness unless it is clearly broken
+- do not broaden into unrelated Marconi work
+- do not change benchmark methodology in a way that breaks comparability
+- do not hardcode a hidden favorite eff_weight fallback
+- keep the public user contract aligned with --radix-eviction-policy marconi
+- scheduled run must stay bounded to 3 iterations
+
+Primary objective:
+- improve autotune-enabled request throughput
+- and, when a main-branch non-Marconi baseline is available in /workspace/autoresearch/baselines.tsv, beat that reference on throughput and TTFT
+
+Secondary objective:
+- lower mean TTFT
+
+At the end of this batch, produce a concise summary containing exactly:
+- iterations completed
+- best throughput seen this run
+- best mean TTFT seen this run
+- whether any local change is worth keeping
+- current target branch and commit
+- delivery note that results.tsv was updated in /workspace/autoresearch
+────────────────────────────────────────
+
+  ┊ 📚 skill     marconi-autoresearch-workspace  0.1s
+  ┊ 📚 skill     systematic-debugging  0.0s
+  ┊ 📚 skill     writing-plans  0.0s
+  ┊ 📋 plan      6 task(s)  0.0s
+  ┊ 📖 read      /workspace/autoresearch/README.md  2.5s
+  ┊ 📖 read      /workspace/autoresearch/program.md  2.5s
+  ┊ 📖 read      /workspace/autoresearch/context.md  2.5s
+  ┊ 📖 read      /workspace/autoresearch/AGENTS.md  2.5s
+  ┊ 📖 read      /workspace/autoresearch/results.tsv  2.5s
+  ┊ 📖 read      ...space/autoresearch/baselines.tsv  2.5s
+  ┊ 📖 read      /workspace/sglang/context.txt  1.2s [error]
+  ┊ 📖 read      /workspace/sglang/marconi.txt  1.2s [error]
+  ┊ 💻 $         export SGLANG_REPO=/workspace/sglang MA...  0.6s
+  ┊ 📖 read      /workspace/autoresearch/context.md  2.5s
+  ┊ 💻 $         git -C /workspace/sglang diff -- python...  0.6s
+  ┊ 📖 read      ...g/srt/mem_cache/marconi_tuner.py  2.5s
+  ┊ 💻 $         python - <<'PY'
+from pathlib import Pat...  0.6s [exit 127]
+  ┊ 💻 $         python3 - <<'PY'
+from pathlib import Pa...  0.6s [exit 1]
+  ┊ 💻 $         python3 -c "from pathlib import Path; l...  0.6s
+  ┊ 💻 $         git -C /workspace/sglang show HEAD:pyth...  0.6s
+  ┊ 💻 $         cd /workspace/sglang && python3 -m py_c...  0.6s
+  ┊ 🔎 grep      25 percent larger evidence budge...  2.5s
+  ┊ 🔎 grep      target_requests|target_insert_ev...  2.5s
+  ┊ 🔎 grep      request_history_window|weight_gr...  1.2s
+  ┊ 🔎 grep      next_tuning|replay window|reques...  1.2s
+  ┊ 🔎 grep      MarconiTuneResult|tune_marconi_e...  1.2s
+  ┊ 🔎 find      *marconi*.py  1.8s
+  ┊ 📖 read      ...g/srt/mem_cache/marconi_tuner.py  2.5s
+  ┊ 🔎 grep      MarconiTuner|tune_marconi_eff_we...  1.2s
+  ┊ 🔎 grep      last_tuned_eff_weight  1.2s
+  ┊ 📖 read      ...t/mem_cache/mamba_radix_cache.py  2.5s
+  ┊ 🔎 grep      _marconi_get_autotune_target|_ma...  1.2s
+  ┊ 📖 read      ...t/mem_cache/mamba_radix_cache.py  2.5s
+  ┊ 🔎 grep      submit\(|tuning_future|weight_gr...  1.2s
+  ┊ 📖 read      ...t/mem_cache/mamba_radix_cache.py  2.5s
+  ┊ 📖 read      ...mem_cache/marconi_replay_core.py  2.5s
+  ┊ 📖 read      .../mem_cache/marconi_cost_model.py  2.5s
+  ┊ 🔎 grep      class MarconiTuningConfig|bootst...  1.2s
+  ┊ 📖 read      .../srt/mem_cache/marconi_config.py  2.5s
+  ┊ 💻 $         git -C /workspace/sglang restore -- pyt...  0.6s
+  ┊ 📖 read      ...g/srt/mem_cache/marconi_tuner.py  2.5s
+  ┊ 🔧 patch     ...g/srt/mem_cache/marconi_tuner.py  3.1s
+  ┊ 🔧 patch     ...t/mem_cache/mamba_radix_cache.py  2.5s
+  ┊ 💻 $         cd /workspace/sglang && python3 -m py_c...  0.6s
+  ┊ 📋 plan      update 3 task(s)  0.0s
+  ┊ 💻 $         export SGLANG_REPO=/workspace/sglang MA...  323.3s
+  ┊ 📖 read      /workspace/autoresearch/run.log  2.5s
+  ┊ 💻 $         printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\...  0.6s
+  ┊ 🔧 patch     ...g/srt/mem_cache/marconi_tuner.py  3.1s
+  ┊ 🔧 patch     ...g/srt/mem_cache/marconi_tuner.py  2.5s
+  ┊ 🔧 patch     ...t/mem_cache/mamba_radix_cache.py  2.5s
+  ┊ 💻 $         cd /workspace/sglang && python3 -m py_c...  0.6s
+  ┊ 📋 plan      update 2 task(s)  0.0s
+  ┊ 💻 $         export SGLANG_REPO=/workspace/sglang MA...  337.9s
+  ┊ 📖 read      /workspace/autoresearch/run.log  2.5s
+  ┊ 💻 $         printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\...  0.6s
+  ┊ 🔧 patch     ...g/srt/mem_cache/marconi_tuner.py  2.5s
+  ┊ 🔧 patch     ...t/mem_cache/mamba_radix_cache.py  2.5s
+  ┊ 🔧 patch     ...t/mem_cache/mamba_radix_cache.py  2.5s
+  ┊ 💻 $         cd /workspace/sglang && python3 -m py_c...  0.6s
+  ┊ 📋 plan      update 2 task(s)  0.0s
+  ┊ 💻 $         export SGLANG_REPO=/workspace/sglang MA...  339.5s
+  ┊ 📖 read      /workspace/autoresearch/run.log  2.5s
+  ┊ 💻 $         printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\...  0.6s
+  ┊ 🔧 patch     ...t/mem_cache/mamba_radix_cache.py  3.1s
+  ┊ 💻 $         cd /workspace/sglang && python3 -m py_c...  0.6s
+  ┊ 💻 $         git -C /workspace/sglang branch --show-...  0.6s
+  ┊ 📋 plan      update 2 task(s)  0.0s
+ ─  ⚕ Hermes  ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 
+                                                                                                                                                                       
+   - iterations completed: 3                                                                                                                                           
+   - best throughput seen this run: 5.401911191696466 req/s                                                                                                            
+   - best mean TTFT seen this run: 180133.24805315473 ms                                                                                                               
+   - whether any local change is worth keeping: no new batch change beat the prior best; I reverted the 3 tested variants and left the repo on the prior               
+   bootstrap-anchor local state                                                                                                                                        
+   - current target branch and commit: marconi-eviction @ 2ab3ce201                                                                                                    
+   - delivery note that results.tsv was updated in /workspace/autoresearch: results.tsv was updated in /workspace/autoresearch                                         
+                                                                                                                                                                       
+ ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 
