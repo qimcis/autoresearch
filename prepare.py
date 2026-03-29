@@ -93,6 +93,18 @@ def base_url() -> str:
     return os.environ.get("MARCONI_BASE_URL", DEFAULT_BASE_URL).rstrip("/")
 
 
+def request_rate_override() -> str | None:
+    value = os.environ.get("MARCONI_REQUEST_RATE")
+    return value.strip() if value and value.strip() else None
+
+
+def max_concurrency_override() -> int | None:
+    value = os.environ.get("MARCONI_MAX_CONCURRENCY")
+    if value is None or not value.strip():
+        return None
+    return int(value)
+
+
 def results_root() -> Path:
     return Path(os.environ.get("MARCONI_RESULTS_DIR", DEFAULT_RESULTS_DIR)).resolve()
 
@@ -247,6 +259,8 @@ def launch_server(repo: Path, run_dir: Path) -> tuple[subprocess.Popen[str], Pat
 def run_benchmark(repo: Path, run_dir: Path, config: BenchmarkConfig) -> Path:
     output_file = run_dir / "result.jsonl"
     bench_log = run_dir / "bench.log"
+    request_rate = request_rate_override() or config.request_rate
+    max_concurrency = max_concurrency_override()
     cmd = [
         sys.executable,
         "-m",
@@ -274,13 +288,15 @@ def run_benchmark(repo: Path, run_dir: Path, config: BenchmarkConfig) -> Path:
         "--gsp-num-turns",
         str(config.gsp_num_turns),
         "--request-rate",
-        config.request_rate,
+        request_rate,
         "--seed",
         "7",
         "--output-file",
         str(output_file),
         "--output-details",
     ]
+    if max_concurrency is not None:
+        cmd.extend(["--max-concurrency", str(max_concurrency)])
     with bench_log.open("w", encoding="utf-8") as fout:
         subprocess.run(
             cmd,
@@ -326,6 +342,8 @@ def build_summary(result: dict[str, Any], mode: str, repo: Path, run_dir: Path, 
         "target_branch": target_branch(repo),
         "target_commit": target_commit(repo),
         "target_dirty": target_is_dirty(repo),
+        "request_rate": request_rate_override() or benchmark_config(mode).request_rate,
+        "max_concurrency": max_concurrency_override(),
         "request_throughput": result.get("request_throughput"),
         "mean_ttft_ms": result.get("mean_ttft_ms"),
         "mean_e2e_latency_ms": result.get("mean_e2e_latency_ms"),
@@ -349,6 +367,10 @@ def build_summary(result: dict[str, Any], mode: str, repo: Path, run_dir: Path, 
         "evict_mamba_states",
     ]:
         summary[key] = _find_first(server_info, key)
+    summary["configured_marconi_eff_weight"] = server_info.get("marconi_eff_weight")
+    summary["configured_disable_marconi_autotune"] = server_info.get(
+        "disable_marconi_autotune"
+    )
     (run_dir / "server_info.json").write_text(
         json.dumps(server_info, indent=2, sort_keys=True), encoding="utf-8"
     )

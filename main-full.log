@@ -1,0 +1,26 @@
+---
+status: completed
+mode: full
+target_repo: /workspace/sglang-main
+target_branch: main
+target_commit: 77872a8d5
+target_dirty: False
+request_throughput: 5.912738514285507
+mean_ttft_ms: 274638.1426705945
+mean_e2e_latency_ms: 290659.091362955
+completed_requests: 3072
+results_jsonl: /workspace/autoresearch/results/20260329-014955/full/result.jsonl
+bench_log: /workspace/autoresearch/results/20260329-014955/full/bench.log
+server_log: /workspace/autoresearch/results/20260329-014955/full/server.log
+server_info_json: /workspace/autoresearch/results/20260329-014955/full/server_info.json
+autotune_started: None
+autotune_finished: None
+autotune_applied: None
+autotune_skipped: None
+autotune_rounds: None
+autotune_inflight: None
+current_eff_weight: None
+last_tuned_eff_weight: None
+autotune_status: None
+token_hit_rate: None
+evict_mamba_states: None
